@@ -1,7 +1,0 @@
-Dear {{ user.username }},
-
-This is the test email
-
-Sincerely,
-
-The Adventure team Team
