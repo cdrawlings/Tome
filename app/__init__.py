@@ -1,9 +1,9 @@
-from flask import Flask, render_template, session, redirect, url_for, flash
-from flask_mail import Mail, Message
+from flask import Flask
+from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 import pymysql
+from flask_login import LoginManager
 from config import config
-from flask_login import LoginManager, current_user
 
 db = SQLAlchemy()
 mail = Mail()

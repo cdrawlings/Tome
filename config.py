@@ -19,7 +19,7 @@ class DevelopmentConfig(Config):
     MAIL_USE_TLS = True
     MAIL_USERNAME = 'dev@rawlings.site'
     MAIL_PASSWORD = 'Test1Test'
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://rawlings:1234@localhost:8889/tomeDB'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://rawlings:1234@localhost:8889/advenDB'
 
 class TestingConfig(Config):
     TESTING = True
