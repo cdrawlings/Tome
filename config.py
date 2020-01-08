@@ -1,5 +1,5 @@
 import os
-base = os.path.abspath(os.path.dirname(__file__))
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
     SECRET_KEY = 'open sesame'

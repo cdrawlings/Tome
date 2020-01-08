@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+<div class="page-header">
+<h1>{{ user.username }}</h1>
+<p>{{ User.name }}</p>
+
+{% if current_user.is_administrator() %}
+    <a><a href="mailto>{{ user.mail }}"{{ user.mail }}</a></p>
+{% endif %}
+
+    <p>Member since {{ moment(user.member_since).format('L') }}.</p>
+
+</div>
+
+{% endblock %}
