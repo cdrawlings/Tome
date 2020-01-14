@@ -17,42 +17,35 @@ class Permission:
 class Roles(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), unique=True)
+    userrole = db.Column(db.String(64), unique=True)
     default = db.Column(db.Boolean, default=False, index=True)
     permissions = db.Column(db.Integer)
-    users = db.relationship('Users', backref='role', lazy='dynamic')
+    users = db.relationship('Users', backref='roles', lazy='dynamic')
 
 
     def __init__(self, **kwargs):
-        super(Role, self).__init__(**kwargs)
+        super(Roles, self).__init__(**kwargs)
         if self.permissions is None:
             self.permissions = 0
 
     @staticmethod
     def insert_roles():
         roles = {
-            'User': [Permission.FOLLOW,
-                     Permission.COMMENT,
-                     Permission.WRITE_ARTICLES],
-            'Moderator': [Permission.FOLLOW,
-                          Permission.COMMENT,
-                          Permission.WRITE_ARTICLES,
-                          Permission.MODERATE],
-            'Administrator': [Permission.FOLLOW,
-                              Permission.COMMENT,
-                              Permission.WRITE_ARTICLES,
-                              Permission.MODERATE,
-                              Permission.ADMINISTER],
+            'User': (Permission.FOLLOW |
+                     Permission.COMMENT|
+                     Permission.WRITE_ARTICLES, True),
+            'Moderator': (Permission.FOLLOW |
+                          Permission.COMMENT |
+                          Permission.WRITE_ARTICLES|
+                          Permission.MODERATE, False),
+            'Administrator': (0xff, False),
         }
-        default_role = 'User'
         for r in roles:
-            role = Role.query.filter_by(name=r).first()
+            role = Roles.query.filter_by(userrole=r).first()
             if role is None:
-                role = Role(name=r)
-            role.reset_permissions()
-            for perm in roles[r]:
-                role.add_permission(perm)
-            role.default = (role.name == default_role)
+                role = Roles(userrole=r)
+            role.permissions = roles[r][0]
+            role.default = roles[r][1]
             db.session.add(role)
         db.session.commit()
 
@@ -77,20 +70,24 @@ class Roles(db.Model):
 class Users(db.Model, UserMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(64), unique=True)
-    username = db.Column(db.String(64), unique=True)
+    email = db.Column(db.String(64), unique=True, nullable=False)
+    username = db.Column(db.String(64), unique=True, nullable=False)
+    firstname = db.Column(db.String(64))
+    lastname = db.Column(db.String(64))
+    location = db.Column(db.String(64))
+    member_since = db.Column(db.DateTime(), default=datetime.utcnow())
+    last_visited = db.Column(db.DateTime(), default=datetime.utcnow())
     password_hash = db.Column(db.String(128))
     confirmed = db.Column(db.Boolean, default=False)
-    member_since = db.Column(db.DateTime, default=datetime.utcnow)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
     def __init__(self, **kwargs):
         super(Users, self).__init__(**kwargs)
-        if self.role is None:
+        if self.roles is None:
             if self.email == current_app.config['APP_ADMIN']:
-                self.role = Roles.query.filter_by(name='Administrator').first()
-            if self.role is None:
-                self.role = Roles.query.filter_by(default=True).first()
+                self.roles = Roles.query.filter_by(permissions=0xff).first()
+            if self.roles is None:
+                self.roles = Roles.query.filter_by(default=True).first()
 
     @property
     def password(self):
@@ -160,14 +157,15 @@ class Users(db.Model, UserMixin):
         return True
 
     def can(self, perm):
-        return self.role is not None and self.role.has_permission(perm)
+        return self.roles is not None and self.roles.has_permission(perm)
 
     def is_administrator(self):
         return self.can(Permission.ADMINISTER)
 
+    def ping(self):
+        self.last_visited = datetime.utcnow()
+        db.session.add(self)
 
-    def __repr__(self):
-        return '<Users {}>'.format(self.username)
 
 class AnonymousUser(AnonymousUserMixin):
     def can(self, permissions):

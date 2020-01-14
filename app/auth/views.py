@@ -3,18 +3,16 @@ from flask_login import login_user, logout_user, login_required, current_user
 from . import auth
 from .. import db
 from ..models import Users
-from ..email import send_email
+from ..sendemail import send_email
 from .forms import LogIn, ChangeEmail, Registration, ChangePassword, PasswordReset, PasswordResetRequest
 
 
 @auth.before_app_request
 def before_request():
-    if current_user.is_authenticated \
-            and not current_user.confirmed \
-            and request.endpoint \
-            and request.blueprint != 'auth' \
-            and request.endpoint != 'static':
-        return redirect(url_for('auth.unconfirmed'))
+    if current_user.is_authenticated:
+        current_user.ping()
+        if not current_user.confirmed and request.endpoint[:5] !='auth.':
+            return redirect(url_for('auth.unconfirmed'))
 
 
 @auth.route('/unconfirmed')
@@ -34,7 +32,7 @@ def login():
             login_user(user, form.remember_me.data)
             next = request.args.get('next')
             if next is None or not next.startswith('/'):
-                next = url_for('main.index')
+                next = url_for('main.user')
             return redirect(next)
         flash('Invalid email or password.')
     return render_template('auth/login.html', form=form)
