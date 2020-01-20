@@ -8,6 +8,7 @@ from flask_login import LoginManager
 from flask_migrate import Migrate
 
 
+
 mail = Mail()
 moment = Moment()
 db = SQLAlchemy()

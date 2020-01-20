@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Edit profile{% endblock %}
+{% block content %}
+    <h1>Edit profile</h1>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.firstname.label }}<br>
+            {{ form.firstname(size=64) }}<br>
+            {% for error in form.firstname.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+
+        </p>
+        <p>
+            {{ form.lastname.label }}<br>
+            {{ form.lastname(size=64) }}<br>
+            {% for error in form.lastname.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+     <p>
+            {{ form.username.label }}<br>
+            {{ form.username(size=64) }}<br>
+            {% for error in form.username.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+     <p>
+            {{ form.location.label }}<br>
+            {{ form.location(size=10) }}<br>
+            {% for error in form.location.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+     <p>
+            {{ form.email.label }}<br>
+            {{ form.email(size=64) }}<br>
+            {% for error in form.email.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+     <p>
+            {{ form.confirmed.label }}<br>
+            {{ form.confirmed() }}<br>
+            {% for error in form.confirmed.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+    <p>
+            {{ form.about_me.label }}<br>
+            {{ form.about_me() }}<br>
+            {% for error in form.about_me.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+
+  {% endblock %}</title>
+</head>
+<body>
+
+</body>
+</html>
