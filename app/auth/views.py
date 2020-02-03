@@ -28,13 +28,9 @@ def login():
     if form.validate_on_submit():
         user = Users.query.filter_by(email=form.email.data.lower()).first()
         if user is not None and user.verify_password(form.password.data):
-            assert isinstance(form.remember_me.data, object)
             login_user(user, form.remember_me.data)
-            next = request.args.get('next')
-            if next is None or not next.startswith('/'):
-                next = url_for('main.user')
-            return redirect(next)
-        flash('Invalid email or password.')
+            return redirect(request.args.get('next') or url_for('main.index'))
+            flash('Invalid email or password.')
     return render_template('auth/login.html', form=form)
 
 

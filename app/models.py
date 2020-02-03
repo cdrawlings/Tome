@@ -7,11 +7,11 @@ from datetime import datetime
 
 
 class Permission:
-    FOLLOW = 0x01
-    COMMENT = 0x02
-    WRITE_ARTICLES = 0x04
-    MODERATE = 0x08
-    ADMINISTER =0x80
+    FOLLOW = 1
+    COMMENT = 2
+    WRITE = 4
+    MODERATE = 8
+    ADMINISTER = 16
 
 
 class Roles(db.Model):
@@ -22,7 +22,6 @@ class Roles(db.Model):
     permissions = db.Column(db.Integer)
     users = db.relationship('Users', backref='roles', lazy='dynamic')
 
-
     def __init__(self, **kwargs):
         super(Roles, self).__init__(**kwargs)
         if self.permissions is None:
@@ -31,21 +30,22 @@ class Roles(db.Model):
     @staticmethod
     def insert_roles():
         roles = {
-            'User': (Permission.FOLLOW |
-                     Permission.COMMENT|
-                     Permission.WRITE_ARTICLES, True),
-            'Moderator': (Permission.FOLLOW |
-                          Permission.COMMENT |
-                          Permission.WRITE_ARTICLES|
-                          Permission.MODERATE, False),
-            'Administrator': (0xff, False),
+            'User': [Permission.FOLLOW, Permission.COMMENT, Permission.WRITE],
+            'Moderator': [Permission.FOLLOW, Permission.COMMENT,
+                          Permission.WRITE, Permission.MODERATE],
+            'Administrator': [Permission.FOLLOW, Permission.COMMENT,
+                              Permission.WRITE, Permission.MODERATE,
+                              Permission.ADMINISTER],
         }
+        default_role = 'User'
         for r in roles:
-            role = Roles.query.filter_by(userrole=r).first()
+            role = Roles.query.filter_by(name=r).first()
             if role is None:
-                role = Roles(userrole=r)
-            role.permissions = roles[r][0]
-            role.default = roles[r][1]
+                role = Roles(name=r)
+            role.reset_permissions()
+            for perm in roles[r]:
+                role.add_permission(perm)
+            role.default = (role.name == default_role)
             db.session.add(role)
         db.session.commit()
 
@@ -70,7 +70,7 @@ class Roles(db.Model):
 class Users(db.Model, UserMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(64), unique=True, nullable=False)
+    email = db.Column(db.String(64), unique=True, nullable=False, index=True)
     username = db.Column(db.String(64), unique=True, nullable=False)
     firstname = db.Column(db.String(64))
     lastname = db.Column(db.String(64))
@@ -81,6 +81,7 @@ class Users(db.Model, UserMixin):
     password_hash = db.Column(db.String(128))
     confirmed = db.Column(db.Boolean, default=False)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+    characters = db.relationship('Characters', backref='player', lazy=True)
 
     def __init__(self, **kwargs):
         super(Users, self).__init__(**kwargs)
@@ -175,8 +176,30 @@ class AnonymousUser(AnonymousUserMixin):
     def is_administrator(self):
         return False
 
+
 login_manager.anonymous_user = AnonymousUser
+
 
 @login_manager.user_loader
 def load_user(user_id):
     return Users.query.get(int(user_id))
+
+
+class Characters(db.Model):
+    __tablename__ = 'characters'
+    id = db.Column(db.Integer, primary_key=True)
+    active = db.Column(db.Boolean, default=True)
+    charname = db.Column(db.String(64), index=True)
+    race = db.Column(db.String(32))
+    c_class = db.Column(db.String(32))
+    align = db.Column(db.String(32))
+    level = db.Column(db.Integer(), default=1)
+    insp = db.Column(db.Integer(), default=0)
+    xp = db.Column(db.Integer(), default=0)
+    str = db.Column(db.Integer(), default=10)
+    con = db.Column(db.Integer(), default=10)
+    dex = db.Column(db.Integer(), default=10)
+    int = db.Column(db.Integer(), default=10)
+    wis = db.Column(db.Integer(), default=10)
+    cha = db.Column(db.Integer(), default=10)
+    player_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
