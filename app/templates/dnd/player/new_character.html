@@ -9,6 +9,8 @@
         {% if current_user.can(Permission.WRITE) %}
 
             <h1>New Character</h1>
+
+           <!--  BEGIN : Abilirt Score Entry form -->
             <form action="" method="post" novalidate>
                 {{ form.hidden_tag() }}
                 <p>
@@ -33,123 +35,130 @@
                     {% endfor %}
                 </p>
 
+                <!-- BEGIN : Ability score enter sectiom -->
                 <div>
 
-
-
-
+<!-- MENU to select ability score generazation system -->
                     <div id="anchor-div">
                         <ul>
                             <li><a id="point-anchor" href="javascript:;"> Point</a></li>
                             <li><a id="manual-anchor" href="javascript:;"> Manual </a></li>
-                             <li><a id="roll-anchor" href="javascript:;"> Roll </a></li>
-                             <li><a id="given-anchor" href="javascript:;"> Given </a></li>
+                            <li><a id="roll-anchor" href="javascript:;"> Roll </a></li>
+                            <li><a id="given-anchor" href="javascript:;"> Given </a></li>
                         </ul>
                     </div>
 
-
+<!-- BEGIN : Ability Score Entery -->
                     <div id="content-div">
+
+                     <!-- Ability scores using the point buy system -->
                         <div id="point-content">this is the point</div>
 
-
-                        <div id="manual-content"> <p>
-                    {{ form.str.label }}<br>
-                    {{ form.str(size=32) }}<br>
-                    {% for error in form.str.errors %}
-                        <span style="color: red;">[{{ error }}]</span>
-                    {% endfor %}
-                </p>
-                             <p>
-                    {{ form.con.label }}<br>
-                    {{ form.con(size=32) }}<br>
-                    {% for error in form.con.errors %}
-                        <span style="color: red;">[{{ error }}]</span>
-                    {% endfor %}
-                </p>
-                     <p>
-                    {{ form.dex.label }}<br>
-                    {{ form.dex(size=32) }}<br>
-                    {% for error in form.dex.errors %}
-                        <span style="color: red;">[{{ error }}]</span>
-                    {% endfor %}
-                </p>
-                             <p>
-                    {{ form.int.label }}<br>
-                    {{ form.int(size=32) }}<br>
-                    {% for error in form.int.errors %}
-                        <span style="color: red;">[{{ error }}]</span>
-                    {% endfor %}
-                </p>
-                             <p>
-                    {{ form.wis.label }}<br>
-                    {{ form.wis(size=32) }}<br>
-                    {% for error in form.wis.errors %}
-                        <span style="color: red;">[{{ error }}]</span>
-                    {% endfor %}
-                </p>
-                          <p>
-                    {{ form.cha.label }}<br>
-                    {{ form.cha(size=32) }}<br>
-                    {% for error in form.cha.errors %}
-                        <span style="color: red;">[{{ error }}]</span>
-                    {% endfor %}
-                </p>
-</div>
-
-
-
-                        <div id="roll-content"> <p>
-                    {{ form.str.label }}<br>
-                    {{ form.str(size=32) }}<br>
-                    {% for error in form.str.errors %}
-                        <span style="color: red;">[{{ error }}]</span>
-                    {% endfor %}
-                </p>
-                             <p>
-                    {{ form.con.label }}<br>
-                    {{ form.con(size=32) }}<br>
-                    {% for error in form.con.errors %}
-                        <span style="color: red;">[{{ error }}]</span>
-                    {% endfor %}
-                </p>
-                     <p>
-                    {{ form.dex.label }}<br>
-                    {{ form.dex(size=32) }}<br>
-                    {% for error in form.dex.errors %}
-                        <span style="color: red;">[{{ error }}]</span>
-                    {% endfor %}
-                </p>
-                             <p>
-                    {{ form.int.label }}<br>
-                    {{ form.int(size=32) }}<br>
-                    {% for error in form.int.errors %}
-                        <span style="color: red;">[{{ error }}]</span>
-                    {% endfor %}
-                </p>
-                             <p>
-                    {{ form.wis.label }}<br>
-                    {{ form.wis(size=32) }}<br>
-                    {% for error in form.wis.errors %}
-                        <span style="color: red;">[{{ error }}]</span>
-                    {% endfor %}
-                </p>
-                          <p>
-                    {{ form.cha.label }}<br>
-                    {{ form.cha(size=32) }}<br>
-                    {% for error in form.cha.errors %}
-                        <span style="color: red;">[{{ error }}]</span>
-                    {% endfor %}
-                </p>
-</div>
+ <!-- Ability scores that the player enters manually -->
+                        <div id="manual-content"><p>
+                            {{ form.str.label }}<br>
+                            {{ form.str(size=32) }}<br>
+                            {% for error in form.str.errors %}
+                                <span style="color: red;">[{{ error }}]</span>
+                            {% endfor %}
+                        </p>
+                            <p>
+                                {{ form.con.label }}<br>
+                                {{ form.con(size=32) }}<br>
+                                {% for error in form.con.errors %}
+                                    <span style="color: red;">[{{ error }}]</span>
+                                {% endfor %}
+                            </p>
+                            <p>
+                                {{ form.dex.label }}<br>
+                                {{ form.dex(size=32) }}<br>
+                                {% for error in form.dex.errors %}
+                                    <span style="color: red;">[{{ error }}]</span>
+                                {% endfor %}
+                            </p>
+                            <p>
+                                {{ form.int.label }}<br>
+                                {{ form.int(size=32) }}<br>
+                                {% for error in form.int.errors %}
+                                    <span style="color: red;">[{{ error }}]</span>
+                                {% endfor %}
+                            </p>
+                            <p>
+                                {{ form.wis.label }}<br>
+                                {{ form.wis(size=32) }}<br>
+                                {% for error in form.wis.errors %}
+                                    <span style="color: red;">[{{ error }}]</span>
+                                {% endfor %}
+                            </p>
+                            <p>
+                                {{ form.cha.label }}<br>
+                                {{ form.cha(size=32) }}<br>
+                                {% for error in form.cha.errors %}
+                                    <span style="color: red;">[{{ error }}]</span>
+                                {% endfor %}
+                            </p>
+                        </div>
 
 
+                    <!-- Ability scores that the App rolls -->
+                        <div id="roll-content"><p>
+                            {{ form.str.label }}<br>
+                            {{ form.str(size=32) }}<br>
+                            {% for error in form.str.errors %}
+                                <span style="color: red;">[{{ error }}]</span>
+                            {% endfor %}
+                        </p>
+                            <p>
+                                {{ form.con.label }}<br>
+                                {{ form.con(size=32) }}<br>
+                                {% for error in form.con.errors %}
+                                    <span style="color: red;">[{{ error }}]</span>
+                                {% endfor %}
+                            </p>
+                            <p>
+                                {{ form.dex.label }}<br>
+                                {{ form.dex(size=32) }}<br>
+                                {% for error in form.dex.errors %}
+                                    <span style="color: red;">[{{ error }}]</span>
+                                {% endfor %}
+                            </p>
+                            <p>
+                                {{ form.int.label }}<br>
+                                {{ form.int(size=32) }}<br>
+                                {% for error in form.int.errors %}
+                                    <span style="color: red;">[{{ error }}]</span>
+                                {% endfor %}
+                            </p>
+                            <p>
+                                {{ form.wis.label }}<br>
+                                {{ form.wis(size=32) }}<br>
+                                {% for error in form.wis.errors %}
+                                    <span style="color: red;">[{{ error }}]</span>
+                                {% endfor %}
+                            </p>
+                            <p>
+                                {{ form.cha.label }}<br>
+                                {{ form.cha(size=32) }}<br>
+                                {% for error in form.cha.errors %}
+                                    <span style="color: red;">[{{ error }}]</span>
+                                {% endfor %}
+                            </p>
+                        </div>
+
+
+                       <!-- Ability scores supplied to dm -->
                         <div id="given-content">this is given</div>
-                    </div>
+
+
+                    </div><!-- END : Ability Score Entery -->
+
+
                 </div>
+            <!-- END : Ability score enter sectiom -->
 
                 <p>{{ form.submit() }}</p>
 
-            </form>
+            </form><!--  END : Abilirt Score Entry form -->
 
         {% endif %}
     </div>
